@@ -21,8 +21,43 @@ export class UserService {
     return createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+    search?: string
+  ): Promise<{ users: User[]; total: number; page: number; totalPages: number }> {
+    const query: any = { role: { $ne: "admin" } };
+
+    // Add search filter
+    if (search) {
+      query.$or = [
+        { email: { $regex: search, $options: 'i' } },
+        { mobile: { $regex: search, $options: 'i' } },
+        { name: { $regex: search, $options: 'i' } }
+      ];
+      // If search is a valid ObjectId, also search by _id
+      if (search.match(/^[0-9a-fA-F]{24}$/)) {
+        query.$or.push({ _id: search });
+      }
+    }
+
+    const skip = (page - 1) * limit;
+    
+    const [users, total] = await Promise.all([
+      this.userModel
+        .find(query)
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.userModel.countDocuments(query)
+    ]);
+
+    return {
+      users,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async findById(id: string): Promise<User> {
@@ -37,19 +72,23 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(updateUserDto: UpdateUserDto): Promise<{}> {
+    const verifyUser = await this.findByEmail(updateUserDto.email || '');
+    if(!verifyUser){
+      throw new NotFoundException(`User with email ${updateUserDto.email} not found`);
+    }
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .exec();
-
-    if (!updatedUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    return updatedUser;
+    await this.userModel.updateOne(
+      { email: verifyUser.email },
+      { $set: updateUserDto },
+    ).exec();
+    return {
+      success: true,
+      message: 'User updated successfully',
+    };
   }
 
   async remove(id: string): Promise<void> {

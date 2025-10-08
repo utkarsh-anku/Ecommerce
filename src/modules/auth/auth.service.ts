@@ -23,10 +23,14 @@ export class AuthService {
   }
 
   async login(user: any) {
+    const userDetails = await this.userService.findByEmail(user.email);
+    if (!userDetails) {
+      throw new UnauthorizedException('User not found');
+    }
     const payload: JwtPayload = {
-      email: user.email,
-      sub: user._id,
-      role: user.role
+      email: userDetails.email,
+      sub: userDetails._id,
+      role: userDetails.role
     };
 
     const [accessToken, refreshToken] = await Promise.all([

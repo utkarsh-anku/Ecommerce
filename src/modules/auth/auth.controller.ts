@@ -18,18 +18,19 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Public } from './decorators/public.decorator';  // Add this import
 
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({ status: 200, description: 'Login successful' })
+  @Public()
   @Post('login')
   async login(@Request() req: any, @Body(ValidationPipe) loginDto: LoginDto) {
-    return this.authService.login(req.user);
+    return this.authService.login(req.body);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,8 +29,8 @@ export class UserController {
 
   @Get()
   @Roles('admin')
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
+    return this.userService.findAll(page, limit, search);
   }
 
   @Get(':id')
@@ -38,10 +39,10 @@ export class UserController {
     return this.userService.findById(id);
   }
 
-  @Patch(':id')
+  @Patch('')
   @Roles('admin', 'user')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto);
   }
 
   @Delete(':id')
