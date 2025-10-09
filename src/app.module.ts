@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { ProductModule } from './modules/products/products.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     MongodbModule,
     UserModule,
     AuthModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
