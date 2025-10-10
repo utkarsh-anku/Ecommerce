@@ -14,9 +14,9 @@ export class UpdateUserDto extends PartialType(
   @IsOptional()
   @IsString()
   @MinLength(8)
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-    { message: 'Password is too weak' }
-  )
+  // @Matches(
+  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+  //   { message: 'Password is too weak' }
+  // )
   password?: string;
 }
