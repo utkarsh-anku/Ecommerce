@@ -21,6 +21,7 @@ export class ProductService {
     page: number = 1,
     limit: number = 10,
     search?: string,
+    category?: string,
   ): Promise<{
     products: Product[];
     total: number;
@@ -37,6 +38,10 @@ export class ProductService {
         { category: { $regex: `.*${searchTerm}.*`, $options: 'i' } },
         { brand: { $regex: `.*${searchTerm}.*`, $options: 'i' } },
       ];
+    }
+
+    if (category && category.trim()) {
+      query.category = category.trim();
     }
 
     const skip = (page - 1) * limit;

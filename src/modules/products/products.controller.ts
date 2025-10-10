@@ -26,8 +26,14 @@ export class ProductController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
     @Query('search') search?: string,
+    @Query('category') category?: string,
   ) {
-    return this.productService.findAll(parseInt(page), parseInt(limit), search);
+    return this.productService.findAll(
+      parseInt(page),
+      parseInt(limit),
+      search,
+      category,
+    );
   }
 
   @Get(':id')
