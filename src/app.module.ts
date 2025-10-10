@@ -11,6 +11,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ProductModule } from './modules/products/products.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProductModule } from './modules/products/products.module';
     UserModule,
     AuthModule,
     ProductModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [
