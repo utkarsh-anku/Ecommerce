@@ -18,7 +18,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { Public } from './decorators/public.decorator';  // Add this import
+import { Public } from './decorators/public.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
@@ -38,7 +39,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({ status: 200, description: 'Profile retrieved' })
   @Post('profile')
-  getProfile(@Request() req: any) {
-    return req.user;
+  getProfile(@CurrentUser() user: any) {
+    return user;
   }
 }
